@@ -443,7 +443,7 @@ layout: process
   { label: '5年保管', description: '法定期限まで' },
 ]" />
 
-<div class="mt-[24px]">
+<div class="mt-[12px]">
 
 <div class="text-[11px] text-gray-500 mb-[4px]">表5-3 S3ストレージクラス別コスト比較</div>
 
@@ -472,15 +472,13 @@ layout: default
 
 ## セキュリティを「コンテナ・多層防御・NoOps」の3アプローチで構造的に強化する
 
-現行の手動・属人的なセキュリティ運用から脱却し、以下の3アプローチで防御層と運用効率を同時に改善する。
-
 <ProcessFlow :steps="[
   { label: '① コンテナ', description: 'Go + Distroless\n攻撃面を極小化' },
   { label: '② 多層防御', description: 'WAF + GuardDuty\nエッジ〜監査まで5層' },
   { label: '③ NoOps', description: 'マネージド自動化\nセキュリティ運用ゼロ' },
 ]" />
 
-<div class="text-[11px] text-gray-500 mb-[4px] mt-[16px]">表5-3a セキュリティアプローチの概要</div>
+<div class="text-[11px] text-gray-500 mb-[4px] mt-[8px]">表5-3a セキュリティアプローチの概要</div>
 
 | アプローチ | 主要サービス・技術 | 効果 | 詳細 |
 |---|---|---|---|
@@ -532,25 +530,18 @@ layout: default
 
 ## Distroless + read-only FSにより、セキュリティ運用工数を大幅に削減しNoOpsに貢献する
 
-**セキュリティ効果:**
-
-<CardGroup :cols="3">
-  <Card title="Distroless" icon="1">OS・シェル非搭載で攻撃面を極小化</Card>
-  <Card title="Read-only FS" icon="2">マルウェアの永続化を防止。実行時にファイルを書き込めない</Card>
-  <Card title="Multi-Stage Build" icon="3">ビルドツールが本番イメージに含まれない</Card>
-</CardGroup>
-
-<div class="mt-[16px]">
-
-**運用効果:**
-
+<div class="text-[13px] font-bold mb-[4px]" style="color:var(--color-primary)">セキュリティ効果:</div>
+<div class="grid grid-cols-3 gap-[8px]">
+  <div class="border border-gray-200 rounded p-[10px]"><div class="text-[18px] font-bold text-gray-300">1</div><div class="font-bold text-[13px] mt-[2px]" style="color:#1B3A5C">Distroless</div><div class="text-gray-600 text-[12px] mt-[2px]">OS・シェル非搭載で攻撃面を極小化</div></div>
+  <div class="border border-gray-200 rounded p-[10px]"><div class="text-[18px] font-bold text-gray-300">2</div><div class="font-bold text-[13px] mt-[2px]" style="color:#1B3A5C">Read-only FS</div><div class="text-gray-600 text-[12px] mt-[2px]">マルウェアの永続化を防止。実行時にファイルを書き込めない</div></div>
+  <div class="border border-gray-200 rounded p-[10px]"><div class="text-[18px] font-bold text-gray-300">3</div><div class="font-bold text-[13px] mt-[2px]" style="color:#1B3A5C">Multi-Stage Build</div><div class="text-gray-600 text-[12px] mt-[2px]">ビルドツールが本番イメージに含まれない</div></div>
 </div>
-
-<CardGroup :cols="3">
-  <Card title="CVE工数削減" icon="4">Go自体の更新のみ対応すればよい</Card>
-  <Card title="デプロイ高速化" icon="5">イメージサイズが小さくCI/CDが高速化</Card>
-  <Card title="NoOps貢献" icon="6">運用チームをセキュリティ運用から解放</Card>
-</CardGroup>
+<div class="text-[13px] font-bold mb-[4px] mt-[8px]" style="color:var(--color-primary)">運用効果:</div>
+<div class="grid grid-cols-3 gap-[8px]">
+  <div class="border border-gray-200 rounded p-[10px]"><div class="text-[18px] font-bold text-gray-300">4</div><div class="font-bold text-[13px] mt-[2px]" style="color:#1B3A5C">CVE工数削減</div><div class="text-gray-600 text-[12px] mt-[2px]">Go自体の更新のみ対応すればよい</div></div>
+  <div class="border border-gray-200 rounded p-[10px]"><div class="text-[18px] font-bold text-gray-300">5</div><div class="font-bold text-[13px] mt-[2px]" style="color:#1B3A5C">デプロイ高速化</div><div class="text-gray-600 text-[12px] mt-[2px]">イメージサイズが小さくCI/CDが高速化</div></div>
+  <div class="border border-gray-200 rounded p-[10px]"><div class="text-[18px] font-bold text-gray-300">6</div><div class="font-bold text-[13px] mt-[2px]" style="color:#1B3A5C">NoOps貢献</div><div class="text-gray-600 text-[12px] mt-[2px]">運用チームをセキュリティ運用から解放</div></div>
+</div>
 
 ---
 layout: comparison-table
@@ -729,7 +720,7 @@ layout: default
   { label: 'QuickSight', description: 'BIダッシュボード' },
 ]" />
 
-<div class="mt-[24px]">
+<div class="mt-[12px]">
 
 **可視化KPI例:**
 
@@ -740,12 +731,6 @@ layout: default
 - ストレージ使用量の推移
 
 </div>
-
-<Callout type="success">
-
-サーバー管理不要・クエリ実行時のみ課金のサーバーレス分析基盤で、データに基づく意思決定を実現。
-
-</Callout>
 
 ---
 layout: agenda
@@ -786,17 +771,15 @@ layout: default
 | S3 | 格納量に応じた課金 | - | ライフサイクルで階層化済み |
 | CloudFront | 転送量に応じた課金 | キャッシュ効果あり | エッジキャッシュ |
 
+<div class="mt-[6px] [&>p]:my-[2px] text-[14px]">
+
 **コスト最適化のポイント:**
 
 - Fargate/Aurora: 通常時（月の約93%）は最小構成で稼働 → ピーク構成固定に比べ大幅な削減
 - S3ライフサイクル: アーカイブデータは最大92%のストレージコスト削減
 - マネージドサービス: 人件費（セキュリティ監視、パッチ適用等）のコスト削減効果
 
-<Callout type="info">
-
-詳細な前提条件・全サービスの内訳は補足資料Cに記載。
-
-</Callout>
+</div>
 
 ---
 layout: comparison-table
@@ -888,8 +871,6 @@ layout: comparison-table
 
 ## 4つの移行リスクに対策を講じ、残存リスクをすべて「低」以下に抑制する
 
-移行前に想定リスクを特定し、具体的な対策を実施することで残存リスクを許容レベルに管理する。
-
 <div class="text-[11px] text-gray-500 mb-[4px]">表5-8 移行リスク・対策・残存リスク一覧</div>
 
 <ComparisonTable
@@ -905,7 +886,7 @@ layout: comparison-table
 
 <Callout type="success">
 
-4リスク中3つは**極小〜低**に抑制済み。運用習熟の「中リスク」は移行後3ヶ月のサポート継続で対応し、**中長期的にはすべて低リスクに収束**する。
+4リスク中3つは**極小〜低**に抑制済み。習熟「中リスク」は3ヶ月サポートで対応し、**中長期的にすべて低リスクに収束**する。
 
 </Callout>
 
@@ -948,7 +929,7 @@ layout: default
   ]
 }" />
 
-<div class="mt-[16px]">
+<div class="mt-[8px]">
 
 **AWSマネージドサービスの継続的進化:**
 - AWSが継続的にサービスを改善・機能追加
@@ -956,12 +937,6 @@ layout: default
 - 新機能の追加はサービス設定の変更のみで対応可能
 
 </div>
-
-<Callout type="success">
-
-フロントエンドとバックエンドが明確に分離されたAPI構成により、将来的な外部システム連携やAIエージェント活用にも柔軟に対応。
-
-</Callout>
 
 ---
 layout: default
