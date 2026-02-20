@@ -65,3 +65,6 @@
 - 新しいChat Sesionで開始。`Plan mode`で方針を確認した後、作成してもらうこと
 - prompt例:
   - prompts/3_slidev/prompt-slidev-convert.md
+- 作成例:
+  - proposal/slides.md
+- slidev Markdown作成後、slidevを自分で起動し、Claudeに伝えると表示確認と修正をしてもらえる
