@@ -11,7 +11,7 @@ const styles = {
 </script>
 
 <template>
-  <div class="border-l-4 rounded-r px-[16px] py-[12px] text-[14px]"
+  <div class="border-l-4 rounded-r px-[16px] py-[12px] text-[14px] [&>p]:my-0"
        :style="{
          borderLeftColor: styles[type]?.borderColor || styles.info.borderColor,
          backgroundColor: styles[type]?.bg || styles.info.bg,

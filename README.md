@@ -70,8 +70,14 @@
 - 作成例:
   - design/slidev/slides.md
 - slidev Markdown作成後、slidevを自分で起動し、Claudeに伝えると表示確認と修正をしてもらえる
-- 人手でも確認し、必要に応じて修正することが望ましい
+- 人手でもレビューし、Claudeに修正依頼することが望ましい
 
 ### slidev形式のMarkdownのレビュー＆修正
 
 - 新しいChat Sesionで開始。`Ask before edits`
+- prompt例:
+  - prompts/3_slidev/prompt-slidev-review.md
+- 作成例:
+  - design/slidev/slides.md
+- 何度か新しいChat Sesionでレビューを繰り返すこと
+- 人手でもレビューし、Claudeに修正依頼することが望ましい

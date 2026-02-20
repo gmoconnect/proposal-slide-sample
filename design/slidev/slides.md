@@ -54,6 +54,8 @@ layout: summary
 
 </Callout>
 
+<div class="text-[11px] text-gray-500 mb-[4px]">表5-1 現行課題・解決策・評価観点の対応</div>
+
 | 現行の課題 | 解決策 | 評価観点 |
 |---|---|---|
 | ハードウェア故障による可用性低下 | Multi-AZ Fargate + Aurora Serverless v2 | **可用性** |
@@ -61,6 +63,17 @@ layout: summary
 | DB拡張性ボトルネック | S3オフロード + Aurora自動拡張 + S3階層化 | **拡張性・コスト・性能** |
 | 日々のオペレーション負荷 | マネージドサービス + Go Distroless + CI/CD | **セキュリティ・コスト** |
 | KPI可視化の欠如 | S3ログ → Athena → QuickSightダッシュボード | **可視化** |
+
+**アプローチマッピング — 評価観点とソリューションの参照先:**
+
+<div class="grid grid-cols-3 gap-[6px] mt-[6px] text-[11px]">
+  <div class="border border-blue-300 rounded px-[8px] py-[4px] bg-blue-50"><strong>性能</strong> → CloudFront+Fargate/Aurora → p.16–17</div>
+  <div class="border border-green-300 rounded px-[8px] py-[4px] bg-green-50"><strong>可用性</strong> → Multi-AZ+Cognito → p.25–27</div>
+  <div class="border border-orange-300 rounded px-[8px] py-[4px] bg-orange-50"><strong>コスト</strong> → 従量課金+S3階層化 → p.16,19,31</div>
+  <div class="border border-purple-300 rounded px-[8px] py-[4px] bg-purple-50"><strong>拡張性</strong> → S3オフロード → p.18–19</div>
+  <div class="border border-red-300 rounded px-[8px] py-[4px] bg-red-50"><strong>セキュリティ</strong> → Distroless+WAF多層防御 → p.21–24</div>
+  <div class="border border-teal-300 rounded px-[8px] py-[4px] bg-teal-50"><strong>可視化</strong> → QuickSight BI → p.28</div>
+</div>
 
 **提案コンセプト: 「NoOpsでコスト・可用性・性能・セキュリティのバランスをとる」**
 
@@ -77,8 +90,8 @@ layout: kpi
   <KPICard value="99.95" unit="%" label="可用性" change="自動フェイルオーバー" :positive="true" />
   <KPICard value="92" unit="%" label="コスト" change="従量課金+S3階層化" :positive="true" />
   <KPICard value="1TB" unit="" label="拡張性" change="S3容量無制限" :positive="true" />
-  <KPICard value="大幅" unit="削減" label="セキュリティ" change="CVE対象削減+監視自動化" :positive="true" />
-  <KPICard value="RT" unit="" label="可視化" change="リアルタイムBIダッシュボード" :positive="true" />
+  <KPICard value="~0" unit="CVE" label="セキュリティ" change="Distroless+read-only FS" :positive="true" />
+  <KPICard value="5" unit="KPI" label="可視化" change="リアルタイムBIダッシュボード" :positive="true" />
 </div>
 
 ---
@@ -189,6 +202,8 @@ layout: summary
   </Card>
 </CardGroup>
 
+<div class="text-[11px] text-gray-500 mb-[4px]">表5-2 課題一覧と評価観点の対応</div>
+
 | # | 課題 | 評価観点 |
 |---|---|---|
 | 1 | 可用性低下（HW故障） | 可用性 |
@@ -218,6 +233,54 @@ layout: section
 ::label::
 
 PART 3
+
+---
+layout: default
+---
+
+<SlideLabel>課題→アプローチ対応</SlideLabel>
+
+## 5つの構造的課題を、「サーバーレス・マネージド・自動化」の3方針で解消する
+
+前パートで確認した5課題に対し、**サーバーレス・マネージド・自動化**を組み合わせ、6つの評価観点すべてに回答する。
+
+<div class="flex gap-[12px] mb-[12px]">
+  <div class="flex-1 bg-red-50 border border-red-200 rounded p-[8px] text-[12px]">
+    <div class="font-bold text-red-700 mb-[4px]">現行の5課題</div>
+    <ol class="list-decimal list-inside space-y-[2px]">
+      <li>可用性低下（HW故障・単一DC）</li>
+      <li>ピークアクセス・固定コスト</li>
+      <li>DB拡張性ボトルネック</li>
+      <li>オペレーション負荷</li>
+      <li>KPI可視化の欠如</li>
+    </ol>
+  </div>
+  <div class="flex items-center text-2xl text-gray-400">→</div>
+  <div class="flex-1 bg-blue-50 border border-blue-200 rounded p-[8px] text-[12px]">
+    <div class="font-bold text-blue-700 mb-[4px]">3方針</div>
+    <div class="space-y-[4px]">
+      <div><strong>① サーバーレス</strong>: Fargate/Aurora自動スケール</div>
+      <div><strong>② マネージド</strong>: WAF/GuardDuty/Cognito</div>
+      <div><strong>③ 自動化</strong>: CI/CD・ライフサイクル・監視</div>
+    </div>
+  </div>
+</div>
+
+<div class="text-[11px] text-gray-500 mb-[4px]">表5-0 課題・アプローチ・評価観点の対応</div>
+
+| # | 課題 | 本提案のアプローチ | 評価観点 | 詳細 |
+|---|---|---|---|---|
+| 1 | 可用性低下（HW故障・単一DC） | Multi-AZ + 自動フェイルオーバー | **可用性** | p.25 |
+| 2 | ピークアクセス・固定コスト | CloudFront + Fargate/Aurora 自動スケール | **性能・コスト・拡張性** | p.16–17 |
+| 3 | DB拡張性ボトルネック | S3オフロード + ライフサイクル階層化 | **拡張性・コスト** | p.18–19 |
+| 4 | オペレーション負荷 | Distroless + WAF多層防御 + CI/CD自動化 | **セキュリティ・コスト** | p.21–24 |
+| 5 | KPI可視化の欠如 | S3ログ → Athena → QuickSight BI | **可視化** | p.28 |
+
+<Callout type="success">
+
+**サーバーレス・マネージド・自動化** — この3方針が5課題を構造的に解消し、6評価観点すべてに回答する。
+
+</Callout>
 
 ---
 layout: default
@@ -371,6 +434,8 @@ layout: process
 
 ## S3ライフサイクルポリシーにより、5年間のデータ保管コストを最大92%削減する
 
+<div class="text-[11px] text-gray-500 mb-[4px]">図5-1 S3ストレージクラス自動移行フロー</div>
+
 <ProcessFlow :steps="[
   { label: 'アップロード', description: 'S3 Standard' },
   { label: '30日後', description: 'Glacier Instant' },
@@ -379,6 +444,8 @@ layout: process
 ]" />
 
 <div class="mt-[24px]">
+
+<div class="text-[11px] text-gray-500 mb-[4px]">表5-3 S3ストレージクラス別コスト比較</div>
 
 | ストレージクラス | コスト（GB/月） | 取得時間 |
 |---|---|---|
@@ -397,13 +464,46 @@ S3 Standard → Deep Archive で **約92%のコスト削減**。要件「取り�
 </div>
 
 ---
+layout: default
+---
+
+<SolutionNav :current="3" />
+<SlideLabel>6. セキュリティ — 多層防御アプローチ全体像</SlideLabel>
+
+## セキュリティを「コンテナ・多層防御・NoOps」の3アプローチで構造的に強化する
+
+現行の手動・属人的なセキュリティ運用から脱却し、以下の3アプローチで防御層と運用効率を同時に改善する。
+
+<ProcessFlow :steps="[
+  { label: '① コンテナ', description: 'Go + Distroless\n攻撃面を極小化' },
+  { label: '② 多層防御', description: 'WAF + GuardDuty\nエッジ〜監査まで5層' },
+  { label: '③ NoOps', description: 'マネージド自動化\nセキュリティ運用ゼロ' },
+]" />
+
+<div class="text-[11px] text-gray-500 mb-[4px] mt-[16px]">表5-3a セキュリティアプローチの概要</div>
+
+| アプローチ | 主要サービス・技術 | 効果 | 詳細 |
+|---|---|---|---|
+| ① コンテナセキュリティ | Go + Distroless + read-only FS | CVE対象～0、イメージ1/50に縮小 | p.22–23 |
+| ② エッジ〜監査の多層防御 | WAF + GuardDuty + CloudTrail | 5層で外側から内側に自動防護 | p.24 |
+| ③ セキュリティ運用自動化 | Fargate + ECRスキャン + CI/CD | 手動監視・パッチ工数をゼロ化 | p.25 |
+
+<Callout type="info">
+
+3アプローチは独立した施策ではなく、**コンテナ単体 → ネットワーク経路 → 運用全体** へと防御範囲が広がる多層構造。
+
+</Callout>
+
+---
 layout: comparison-table
 ---
 
 <SolutionNav :current="3" />
-<SlideLabel>6. Go + Distroless イメージ</SlideLabel>
+<SlideLabel>7. Go + Distroless イメージ</SlideLabel>
 
 ## Go言語 + Distrolessイメージにより、コンテナの攻撃面を極小化する
+
+<div class="text-[11px] text-gray-500 mb-[4px]">表5-4 コンテナイメージ比較（一般的なイメージ vs Go + Distroless）</div>
 
 <ComparisonTable
   :headers="['項目', '一般的なイメージ（Ubuntu+ランタイム）', 'Go + Distroless']"
@@ -428,7 +528,7 @@ layout: default
 ---
 
 <SolutionNav :current="3" />
-<SlideLabel>7. Distroless 運用効果</SlideLabel>
+<SlideLabel>8. Distroless 運用効果</SlideLabel>
 
 ## Distroless + read-only FSにより、セキュリティ運用工数を大幅に削減しNoOpsに貢献する
 
@@ -457,9 +557,11 @@ layout: comparison-table
 ---
 
 <SolutionNav :current="3" />
-<SlideLabel>8. WAF・GuardDuty 多層防御</SlideLabel>
+<SlideLabel>9. WAF・GuardDuty 多層防御</SlideLabel>
 
 ## WAF・GuardDuty・CloudTrailの多層防御により、エッジからデータ層まで自動的に保護する
+
+<div class="text-[11px] text-gray-500 mb-[4px]">表5-5 多層防御サービス一覧（防御層・役割）</div>
 
 <ComparisonTable
   :headers="['防御層', 'サービス', '役割']"
@@ -484,9 +586,11 @@ layout: comparison-table
 ---
 
 <SolutionNav :current="3" />
-<SlideLabel>9. セキュリティ運用の自動化</SlideLabel>
+<SlideLabel>10. セキュリティ運用の自動化</SlideLabel>
 
 ## マネージドサービスにより、セキュリティ運用の大半を自動化しNoOpsを実現する
+
+<div class="text-[11px] text-gray-500 mb-[4px]">表5-6 セキュリティ運用 Before/After 比較</div>
 
 <ComparisonTable
   :headers="['運用項目', 'Before（手動）', 'After（マネージド）']"
@@ -511,9 +615,11 @@ layout: comparison-table
 ---
 
 <SolutionNav :current="4" />
-<SlideLabel>10. Multi-AZ 可用性構成</SlideLabel>
+<SlideLabel>11. Multi-AZ 可用性構成</SlideLabel>
 
 ## Multi-AZ構成と自動フェイルオーバーにより、99.95%以上の可用性を確保する
+
+<div class="text-[11px] text-gray-500 mb-[4px]">表5-7 コンポーネント別 可用性設計とSLA</div>
 
 <ComparisonTable
   :headers="['コンポーネント', '可用性設計', 'SLA']"
@@ -544,7 +650,7 @@ layout: process
 <div class="w-full">
 
 <SolutionNav :current="4" />
-<SlideLabel>11. Cognito + ALB 認証フロー</SlideLabel>
+<SlideLabel>12. Cognito + ALB 認証フロー</SlideLabel>
 
 ## Cognito + ALBのJWT検証により、不正リクエストをアプリケーション到達前に遮断する
 
@@ -576,7 +682,7 @@ layout: default
 ---
 
 <SolutionNav :current="4" />
-<SlideLabel>12. マネージド認証基盤</SlideLabel>
+<SlideLabel>13. マネージド認証基盤</SlideLabel>
 
 ## マネージド認証基盤により、認証の運用負荷ゼロとピーク時のスケーラビリティを両立する
 
@@ -610,9 +716,11 @@ layout: default
 ---
 
 <SolutionNav :current="5" />
-<SlideLabel>13. QuickSight ダッシュボード</SlideLabel>
+<SlideLabel>14. QuickSight ダッシュボード</SlideLabel>
 
 ## QuickSightダッシュボードにより、システムKPIをリアルタイムに可視化する
+
+<div class="text-[11px] text-gray-500 mb-[4px]">図5-3 QuickSightデータパイプライン</div>
 
 <ProcessFlow :steps="[
   { label: 'ログ収集', description: 'CloudFront/ALB/App' },
@@ -669,6 +777,8 @@ layout: default
 
 ## 従量課金モデルにより、月額ランニングコストを最適化する
 
+<div class="text-[11px] text-gray-500 mb-[4px]">表5-8a コストモデル — サービス別従量課金の構造</div>
+
 | サービス | 通常時 | ピーク時（月末2日間） | 備考 |
 |---|---|---|---|
 | ECS on Fargate | 最小タスク構成 | タスク自動増加分のみ追加 | vCPU/メモリ × 稼働秒数 |
@@ -695,6 +805,8 @@ layout: comparison-table
 <SlideLabel>2. 評価観点別 Before / After</SlideLabel>
 
 ## 6つの評価観点すべてにおいて、提案アーキテクチャにより現行システムから定量的に改善される
+
+<div class="text-[11px] text-gray-500 mb-[4px]">表5-8b 評価観点別 Before/After 比較</div>
 
 <ComparisonTable
   :headers="['評価観点', 'Before（現行オンプレ）', 'After（AWS提案構成）', '改善ポイント']"
@@ -741,6 +853,8 @@ layout: process
 
 ## CI/CDパイプラインとBlue/Greenデプロイにより、ゼロダウンタイムで安全なリリースを実現する
 
+<div class="text-[11px] text-gray-500 mb-[4px]">図5-2 CI/CDパイプライン全体フロー</div>
+
 <ProcessFlow :steps="[
   { label: 'CodeCommit', description: 'ソース管理' },
   { label: 'CodeBuild', description: 'ビルド・テスト' },
@@ -772,22 +886,26 @@ layout: comparison-table
 
 <SlideLabel>2. リスク管理</SlideLabel>
 
-## クラウド移行に伴うリスクを事前に特定し、対策を講じる
+## 4つの移行リスクに対策を講じ、残存リスクをすべて「低」以下に抑制する
+
+移行前に想定リスクを特定し、具体的な対策を実施することで残存リスクを許容レベルに管理する。
+
+<div class="text-[11px] text-gray-500 mb-[4px]">表5-8 移行リスク・対策・残存リスク一覧</div>
 
 <ComparisonTable
-  :headers="['リスク', '影響', '対策']"
+  :headers="['リスク', '影響', '対策（参照先）', '残存リスク']"
   :rows="[
-    ['データ移行時のデータ不整合', '移行後にデータ欠損・不整合が発生', '移行前後のデータ件数・チェックサム照合。段階的な移行で影響範囲を限定'],
-    ['切り替え時のサービス停止', 'ユーザーがサービスを利用できない', 'DNS加重ルーティングによる段階的移行。問題時は即時切り戻し可能'],
-    ['運用チームの習熟不足', 'インシデント対応が遅延', '移行前にAWSトレーニング実施。運用手順書の整備。移行後はサポート体制を強化'],
-    ['想定外のコスト増', '従量課金の見積もりと実績に乖離', 'AWS Cost Explorerで日次モニタリング。Budgetsアラートで閾値超過を即時検知'],
+    ['データ移行時のデータ不整合', '移行後にデータ欠損・不整合が発生', '移行前後のデータ件数・チェックサム照合。段階的移行で影響範囲を限定（p.35参照）', '🟢 極小: 二重検証で欠損ゼロを担保'],
+    ['切り替え時のサービス停止', 'ユーザーがサービスを利用できない', 'DNS加重ルーティングによる段階的移行。Blue/Greenで即時切り戻し可能（p.35参照）', '🟢 極小: ロールバック数分以内'],
+    ['運用チームの習熟不足', 'インシデント対応が遅延', 'AWSトレーニング実施。運用手順書整備。移行後3ヶ月はサポート体制強化（p.25参照）', '🟡 中: 習熟期間3ヶ月は支援継続'],
+    ['想定外のコスト増', '従量課金の見積もりと実績に乖離', 'Cost Explorerで日次モニタリング。Budgetsアラートで閾値超過を即時検知（p.31参照）', '🟢 低: アラートで即時検知・是正'],
   ]"
-  :highlightCol="2"
+  :highlightCol="3"
 />
 
-<Callout type="info">
+<Callout type="success">
 
-主要なリスクを事前に特定し、それぞれに具体的な対策を講じることで移行の成功確率を高める。
+4リスク中3つは**極小〜低**に抑制済み。運用習熟の「中リスク」は移行後3ヶ月のサポート継続で対応し、**中長期的にはすべて低リスクに収束**する。
 
 </Callout>
 
@@ -888,9 +1006,9 @@ layout: section
 layout: summary
 ---
 
-<SlideLabel>評価項目 No.5 回答総括</SlideLabel>
+<SlideLabel>まとめ(1/2) — 要件対応と定量効果</SlideLabel>
 
-## 評価項目No.5に対する回答の総括 — AWSサーバーレス構成で6つの評価観点すべてを満たす
+## 評価項目No.5 — 6つの評価観点すべてに対応し、定量的な大幅改善を実現する
 
 <Callout type="info">
 
@@ -898,16 +1016,55 @@ layout: summary
 
 </Callout>
 
-| 評価観点 | 本提案での回答 | p. |
-|---|---|---|
-| **性能** | Fargate/Aurora自動スケール + CloudFront CDN。ピーク約100倍安定 | 7-9 |
-| **可用性** | 全層Multi-AZ + 自動フェイルオーバー。SLA 99.95%以上 | 15,21 |
-| **コスト** | 従量課金 + S3階層化で保管コスト最大92%削減 | 7,10,19 |
-| **拡張性** | S3無制限 + Aurora自動拡張。DB負荷1/10 | 8-10 |
-| **セキュリティ** | WAF + GuardDuty多層防御。Distroless + read-only FS | 11-14 |
-| **可視化** | S3ログ → Athena → QuickSightリアルタイムBI | 18 |
+<div class="text-[11px] text-gray-500 mb-[4px]">表5-9a 評価観点別 要件対応サマリー</div>
 
-→ **6つの評価観点すべてにおいて最適なクラウドアーキテクチャを実現する**
+| 評価観点 | 本提案での回答 | 詳細 |
+|---|---|---|
+| **性能** | Fargate/Aurora自動スケール + CloudFront CDN | p.16–17 |
+| **可用性** | 全層Multi-AZ + 自動フェイルオーバー | p.25–27 |
+| **コスト** | 従量課金 + S3ライフサイクル階層化 | p.16,19,31 |
+| **拡張性** | S3オフロード + Aurora自動拡張 | p.18–19 |
+| **セキュリティ** | WAF + GuardDuty多層防御 + Distroless | p.21–25 |
+| **可視化** | S3ログ → Athena → QuickSightリアルタイムBI | p.28 |
+
+<div class="text-[11px] text-gray-500 mb-[4px] mt-[12px]">表5-9b 定量効果サマリー</div>
+
+| 評価観点 | Before | After | **定量効果** |
+|---|---|---|---|
+| 性能 | 固定容量、ピーク時リスク | Fargate/Aurora自動スケール | ピーク**100倍**変動を安定処理 |
+| 可用性 | 単一DC、手動対応 | Multi-AZ自動フェイルオーバー | SLA **99.95%**以上 |
+| コスト | ピーク固定費用 | 従量課金 + S3階層化 | 保管コスト最大**92%**削減 |
+| 拡張性 | DB 100GB上限 | S3無制限 + Aurora自動拡張 | 5年後1TB対応、DB負荷**1/10** |
+| セキュリティ | 手動監視・パッチ | マネージド多層防御 + Distroless | CVE対象数**~0**、運用自動化 |
+| 可視化 | KPIなし | QuickSightリアルタイムBI | **5KPI**即時参照 |
+
+---
+layout: summary
+---
+
+<SlideLabel>まとめ(2/2) — 他評価項目との関連性</SlideLabel>
+
+## 本提案のアーキテクチャ要素は、他の評価項目とも横断的に連携する
+
+本提案で設計したAWS構成は評価項目No.5単独の回答にとどまらず、他の評価項目の要件にも直接貢献する。
+
+<div class="text-[11px] text-gray-500 mb-[4px]">表5-10 他評価項目との関連</div>
+
+| 関連する評価項目 | 本提案との関連内容 | 参照先 |
+|---|---|---|
+| **移行計画・リスク管理** | Blue/Greenデプロイによるゼロダウンタイム移行、DNS段階的切替 | p.35–36 |
+| **運用・保守性** | CI/CDパイプライン、IaC管理、マネージドサービスによるNoOps | p.35, 40–41 |
+| **セキュリティ要件** | WAF+GuardDuty多層防御、Distroless、CloudTrail監査証跡 | p.21–25 |
+| **コスト管理** | 従量課金モデル、S3ライフサイクル、Cost Explorer監視 | p.19, 31 |
+| **将来拡張性** | API設計によるフロント/バック分離、AIエージェント連携対応 | p.39 |
+
+<Callout type="info">
+
+各評価項目で**本提案の該当ページを横断参照**することで、提案全体の一貫性と設計の統合性を確認できる。
+
+</Callout>
+
+→ **AWSサーバーレス構成は6評価観点すべてを満たし、他評価項目とも一貫性のある提案全体を構成する**
 
 ---
 layout: section
