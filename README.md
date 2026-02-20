@@ -37,6 +37,8 @@
 - prompt例
   - prompts/1_template/prompt-template-slide2.md
 - 作成例:
+  - design/slidev-usage-guide.md
+  - design/slidev/*
 
 ## 2. 提案ストーリーを作成
 
@@ -49,7 +51,7 @@
 - 作成例:
   - proposal/story-before-review.md
 
-### ストーリー案のレビュー
+### ストーリー案のレビュー＆修正
 
 - 新しいChat Sesionで開始。`Ask before edits`
 - prompt例
@@ -57,3 +59,9 @@
 - 作成例:
   - proposal/story.md
 - 何度か新しいChat Sesionでレビューを繰り返すことが望ましい
+
+## 3. Slidev形式のMarkdownに変換
+
+- 新しいChat Sesionで開始。`Plan mode`で方針を確認した後、作成してもらうこと
+- prompt例:
+  - prompts/3_slidev/prompt-slidev-convert.md
