@@ -43,6 +43,8 @@ PART 1
 layout: summary
 ---
 
+<SlideLabel>1. 評価観点と回答</SlideLabel>
+
 ## AWSサーバーレス構成により、5つの課題すべてを解決し運用負荷ゼロを実現する
 
 <Callout type="info">
@@ -65,6 +67,8 @@ layout: summary
 ---
 layout: kpi
 ---
+
+<SlideLabel>2. 定量効果サマリー</SlideLabel>
 
 <h2 class="!text-[16px] !mb-[8px]">6つの評価観点すべてにおいて、現行システムから定量的に大幅改善する</h2>
 
@@ -103,6 +107,8 @@ PART 2
 layout: default
 ---
 
+<SlideLabel>1. 現行システム構成</SlideLabel>
+
 ## 現行オンプレミスシステムはハードウェア保守期限を迎え、抜本的な基盤刷新が必要である
 
 <CardGroup :cols="3">
@@ -130,6 +136,8 @@ layout: default
 ---
 layout: default
 ---
+
+<SlideLabel>2. インフラ課題</SlideLabel>
 
 ## 現行システムにはインフラ起因の3つの構造的課題がある
 
@@ -164,36 +172,30 @@ layout: default
 layout: summary
 ---
 
-## 運用・可視化にも2つの構造的課題があり、クラウドネイティブアーキテクチャへの刷新が必要である
+<SlideLabel>3. 運用・可視化の課題</SlideLabel>
+
+## 運用・可視化にも構造的課題があり、クラウドネイティブへの刷新が必要である
 
 <CardGroup :cols="2">
   <Card title="課題4: オペレーション負荷" icon="4">
 
-セキュリティ監視、CVE確認、OSパッチ適用、ログローテーション、バックアップなど日常的な運用作業が多岐にわたる。
-→ **運用チームの工数が定常作業に占有され、改善・新機能開発に充てる余力がない**
+定常運用作業に占有され、**改善・開発に充てる余力がない**
 
   </Card>
   <Card title="課題5: KPI可視化の欠如" icon="5">
 
-システムおよびWebサービスのKPIが可視化されておらず、データに基づく意思決定ができていない。
-→ **問題の早期発見ができず、障害の長期化やサービス品質低下を招くリスク**
+データに基づく意思決定ができず、**障害長期化リスク**
 
   </Card>
 </CardGroup>
 
-| # | 課題 | 関連する評価観点 |
+| # | 課題 | 評価観点 |
 |---|---|---|
-| 1 | ハードウェア故障による可用性低下 | 可用性 |
-| 2 | 月末アクセス集中とピークコスト | 性能・コスト・拡張性 |
-| 3 | データベースの拡張性ボトルネック | 拡張性・コスト・性能 |
-| 4 | 日々のオペレーション負荷 | セキュリティ・コスト |
+| 1 | 可用性低下（HW故障） | 可用性 |
+| 2 | アクセス集中・ピークコスト | 性能・コスト・拡張性 |
+| 3 | DB拡張性ボトルネック | 拡張性・コスト・性能 |
+| 4 | オペレーション負荷 | セキュリティ・コスト |
 | 5 | KPI可視化の欠如 | 可視化 |
-
-<Callout type="success">
-
-ハードウェア更新ではなく、**クラウドネイティブアーキテクチャへの刷新**で5つの課題すべてを解決する。
-
-</Callout>
 
 ---
 layout: agenda
@@ -221,6 +223,28 @@ PART 3
 layout: default
 ---
 
+<SlideLabel>ソリューション提案の構成</SlideLabel>
+
+## 評価観点ごとに最適なAWSサービスを組み合わせ、6つの課題すべてを解決する
+
+<SolutionNav :current="-1" />
+
+<CardGroup :cols="3">
+  <Card title="全体像" icon="1">アーキテクチャ設計方針と全体構成図</Card>
+  <Card title="性能" icon="2">CloudFront CDN + Fargate/Aurora 自動スケーリング</Card>
+  <Card title="拡張性・コスト" icon="3">S3オフロード + ライフサイクル管理</Card>
+  <Card title="セキュリティ" icon="4">Distroless + WAF多層防御 + 運用自動化</Card>
+  <Card title="可用性・認証" icon="5">Multi-AZ + Cognito 認証基盤</Card>
+  <Card title="可視化" icon="6">QuickSight リアルタイムBIダッシュボード</Card>
+</CardGroup>
+
+---
+layout: default
+---
+
+<SolutionNav :current="0" />
+<SlideLabel>1. アーキテクチャ全体像</SlideLabel>
+
 ## AWSサーバーレス・マネージドサービスを中心としたクラウドネイティブアーキテクチャで全課題を解決する
 
 <Callout type="info">
@@ -243,6 +267,9 @@ layout: default
 ---
 layout: default
 ---
+
+<SolutionNav :current="1" />
+<SlideLabel>2. CloudFront + Fargate 自動スケーリング</SlideLabel>
 
 ## CloudFront + Fargate自動スケーリングにより、月末ピーク時でもレスポンス劣化なく対応する
 
@@ -273,6 +300,9 @@ layout: default
 layout: default
 ---
 
+<SolutionNav :current="1" />
+<SlideLabel>3. Aurora Serverless v2</SlideLabel>
+
 ## Aurora Serverless v2により、データベースの容量・性能がワークロードに応じて自動調整される
 
 <BeforeAfter improvement="自動スケーリング" beforeLabel="現行DB" afterLabel="Aurora Serverless v2">
@@ -301,6 +331,9 @@ layout: default
 ---
 layout: default
 ---
+
+<SolutionNav :current="2" />
+<SlideLabel>4. S3 Pre-signed URL によるオフロード</SlideLabel>
 
 ## S3 Pre-signed URLによりバイナリデータをオフロードし、アプリケーション負荷とDBボトルネックを同時に解消する
 
@@ -333,6 +366,9 @@ layout: process
 
 <div class="w-full">
 
+<SolutionNav :current="2" />
+<SlideLabel>5. S3 ライフサイクルポリシー</SlideLabel>
+
 ## S3ライフサイクルポリシーにより、5年間のデータ保管コストを最大92%削減する
 
 <ProcessFlow :steps="[
@@ -364,6 +400,9 @@ S3 Standard → Deep Archive で **約92%のコスト削減**。要件「取り�
 layout: comparison-table
 ---
 
+<SolutionNav :current="3" />
+<SlideLabel>6. Go + Distroless イメージ</SlideLabel>
+
 ## Go言語 + Distrolessイメージにより、コンテナの攻撃面を極小化する
 
 <ComparisonTable
@@ -387,6 +426,9 @@ OS層やミドルウェアがほぼ存在しないため、CVEの検知対象が
 ---
 layout: default
 ---
+
+<SolutionNav :current="3" />
+<SlideLabel>7. Distroless 運用効果</SlideLabel>
 
 ## Distroless + read-only FSにより、セキュリティ運用工数を大幅に削減しNoOpsに貢献する
 
@@ -414,6 +456,9 @@ layout: default
 layout: comparison-table
 ---
 
+<SolutionNav :current="3" />
+<SlideLabel>8. WAF・GuardDuty 多層防御</SlideLabel>
+
 ## WAF・GuardDuty・CloudTrailの多層防御により、エッジからデータ層まで自動的に保護する
 
 <ComparisonTable
@@ -438,6 +483,9 @@ layout: comparison-table
 layout: comparison-table
 ---
 
+<SolutionNav :current="3" />
+<SlideLabel>9. セキュリティ運用の自動化</SlideLabel>
+
 ## マネージドサービスにより、セキュリティ運用の大半を自動化しNoOpsを実現する
 
 <ComparisonTable
@@ -461,6 +509,9 @@ layout: comparison-table
 ---
 layout: comparison-table
 ---
+
+<SolutionNav :current="4" />
+<SlideLabel>10. Multi-AZ 可用性構成</SlideLabel>
 
 ## Multi-AZ構成と自動フェイルオーバーにより、99.95%以上の可用性を確保する
 
@@ -492,6 +543,9 @@ layout: process
 
 <div class="w-full">
 
+<SolutionNav :current="4" />
+<SlideLabel>11. Cognito + ALB 認証フロー</SlideLabel>
+
 ## Cognito + ALBのJWT検証により、不正リクエストをアプリケーション到達前に遮断する
 
 <ProcessFlow :steps="[
@@ -520,6 +574,9 @@ layout: process
 ---
 layout: default
 ---
+
+<SolutionNav :current="4" />
+<SlideLabel>12. マネージド認証基盤</SlideLabel>
 
 ## マネージド認証基盤により、認証の運用負荷ゼロとピーク時のスケーラビリティを両立する
 
@@ -551,6 +608,9 @@ Cognitoはフルマネージドサービスのため、認証インフラの構�
 ---
 layout: default
 ---
+
+<SolutionNav :current="5" />
+<SlideLabel>13. QuickSight ダッシュボード</SlideLabel>
 
 ## QuickSightダッシュボードにより、システムKPIをリアルタイムに可視化する
 
@@ -605,6 +665,8 @@ PART 4
 layout: default
 ---
 
+<SlideLabel>1. コストモデル</SlideLabel>
+
 ## 従量課金モデルにより、月額ランニングコストを最適化する
 
 | サービス | 通常時 | ピーク時（月末2日間） | 備考 |
@@ -629,6 +691,8 @@ layout: default
 ---
 layout: comparison-table
 ---
+
+<SlideLabel>2. 評価観点別 Before / After</SlideLabel>
 
 ## 6つの評価観点すべてにおいて、提案アーキテクチャにより現行システムから定量的に改善される
 
@@ -673,6 +737,8 @@ layout: process
 
 <div class="w-full">
 
+<SlideLabel>1. CI/CD パイプライン</SlideLabel>
+
 ## CI/CDパイプラインとBlue/Greenデプロイにより、ゼロダウンタイムで安全なリリースを実現する
 
 <ProcessFlow :steps="[
@@ -703,6 +769,8 @@ layout: process
 ---
 layout: comparison-table
 ---
+
+<SlideLabel>2. リスク管理</SlideLabel>
 
 ## クラウド移行に伴うリスクを事前に特定し、対策を講じる
 
@@ -749,6 +817,8 @@ PART 6
 layout: default
 ---
 
+<SlideLabel>1. API 設計と拡張性</SlideLabel>
+
 ## API設計により、外部システム連携やAIエージェント活用など将来の機能拡張に柔軟に対応する
 
 <LogicTree :tree="{
@@ -778,6 +848,8 @@ layout: default
 ---
 layout: default
 ---
+
+<SlideLabel>2. IaC（Infrastructure as Code）</SlideLabel>
 
 ## IaCによりインフラ構成をコード管理し、環境の再現性と変更管理を確保する
 
@@ -816,25 +888,26 @@ layout: section
 layout: summary
 ---
 
+<SlideLabel>評価項目 No.5 回答総括</SlideLabel>
+
 ## 評価項目No.5に対する回答の総括 — AWSサーバーレス構成で6つの評価観点すべてを満たす
 
 <Callout type="info">
 
-**評価項目No.5**: 本システム実現のための最適なクラウドアーキテクチャの提案ができているか。次の観点を含むこと。
-**性能 / 可用性 / コスト / 拡張性 / セキュリティ / 可視化**
+**評価項目No.5**: 最適なクラウドアーキテクチャの提案。観点: **性能 / 可用性 / コスト / 拡張性 / セキュリティ / 可視化**
 
 </Callout>
 
-| 評価観点 | 本提案での回答 | 該当スライド |
+| 評価観点 | 本提案での回答 | p. |
 |---|---|---|
-| **性能** | Fargate/Aurora自動スケール + CloudFront CDNでピーク約100倍でも安定。S3オフロードで転送量90%削減 | 7, 8, 9 |
-| **可用性** | 全層Multi-AZ + 自動フェイルオーバーでSLA 99.95%以上。クロスリージョンバックアップ対応 | 15, 21 |
-| **コスト** | 従量課金で通常時コスト大幅削減。S3階層化で保管コスト最大92%削減 | 7, 10, 19 |
-| **拡張性** | S3容量無制限 + Aurora自動拡張。バイナリオフロードでDB 1/10。5年後1TB対応 | 8, 9, 10 |
-| **セキュリティ** | WAF + GuardDuty + CloudTrailの多層防御。Distroless + read-only FSでCVE大幅削減 | 11-14, 16 |
-| **可視化** | S3ログ → Athena → QuickSightでリアルタイムBIダッシュボードを構築 | 18 |
+| **性能** | Fargate/Aurora自動スケール + CloudFront CDN。ピーク約100倍安定 | 7-9 |
+| **可用性** | 全層Multi-AZ + 自動フェイルオーバー。SLA 99.95%以上 | 15,21 |
+| **コスト** | 従量課金 + S3階層化で保管コスト最大92%削減 | 7,10,19 |
+| **拡張性** | S3無制限 + Aurora自動拡張。DB負荷1/10 | 8-10 |
+| **セキュリティ** | WAF + GuardDuty多層防御。Distroless + read-only FS | 11-14 |
+| **可視化** | S3ログ → Athena → QuickSightリアルタイムBI | 18 |
 
-**本提案のAWSサーバーレス・マネージドサービス構成は、評価項目No.5が求める「本システム実現のための最適なクラウドアーキテクチャ」を、6つの評価観点すべてにおいて実現する。**
+→ **6つの評価観点すべてにおいて最適なクラウドアーキテクチャを実現する**
 
 ---
 layout: section
@@ -928,31 +1001,24 @@ layout: summary
 AWS Managed Rulesで主要な攻撃パターンに対応。より高度なWAF運用（カスタムルール管理、24/365監視、インシデント対応）が必要な場合、WafCharm等のSOCサービスの導入を検討。
 
 ---
-layout: default
+layout: summary
 ---
 
 ## 補足E: Go + Distrolessのベンチマーク比較
 
-**コンテナイメージサイズ比較:**
+**イメージサイズ・セキュリティ比較:**
 
-| ベースイメージ | イメージサイズ | 備考 |
-|---|---|---|
-| Ubuntu 22.04 + Go runtime | 約800MB | フルOS + ツール群 |
-| Alpine + Go runtime | 約300MB | 軽量Linux |
-| golang:alpine (multi-stage) | 約15MB | ビルドステージ分離 |
-| **gcr.io/distroless/static** | **約10MB** | **OS/シェルなし、最小構成** |
+| ベースイメージ | サイズ | CVE検知数目安 | 備考 |
+|---|---|---|---|
+| Ubuntu 22.04 + Go | 約800MB | 50〜200件 | フルOS + ツール群 |
+| Alpine + Go | 約300MB | 10〜30件 | 軽量だがmusl libc脆弱性あり |
+| golang:alpine (multi-stage) | 約15MB | 10〜30件 | ビルドステージ分離 |
+| **gcr.io/distroless/static** | **約10MB** | **極少** | **OS/シェルなし、最小構成** |
 
-**Multi-Stage Buildフロー:**
+**Multi-Stage Build:** Builder(golang:alpine)でgo build → Production(distroless/static)に単一バイナリのみコピー
 
-```
-Stage 1 (Builder): golang:alpine → ソースコード取得 → go build → 単一バイナリ生成
-Stage 2 (Production): gcr.io/distroless/static → 単一バイナリのみコピー → 最終イメージ
-```
+<Callout type="success">
 
-**セキュリティ比較（CVE検知数の目安）:**
+Distrolessにより**イメージサイズ1/80、CVE検知ほぼゼロ**を同時に実現。シェル非搭載でコンテナ侵入後の攻撃も防止。
 
-| ベースイメージ | 一般的なCVE検知数 | 備考 |
-|---|---|---|
-| Ubuntu 22.04 | 50〜200件 | OS・ライブラリの脆弱性を含む |
-| Alpine | 10〜30件 | 軽量だがmusl libc等の脆弱性 |
-| **Distroless** | **極少** | **OS層の脆弱性がほぼゼロ** |
+</Callout>
