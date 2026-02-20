@@ -1,0 +1,14 @@
+{
+  "name": "proposal-slide-template",
+  "private": true,
+  "scripts": {
+    "dev": "slidev",
+    "build": "slidev build",
+    "export": "slidev export"
+  },
+  "dependencies": {
+    "@slidev/cli": "^51.0.0",
+    "@slidev/theme-default": "latest",
+    "vue": "^3.5.0"
+  }
+}
