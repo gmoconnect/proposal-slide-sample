@@ -7,7 +7,7 @@ requirements/requirements_sample.md の提案依頼に対し、ストーリー�
 
 ### 提案コンセプト
 
-AWSのサーバーレス構成＆マネージドサービスで、NoOpeでコスト・可用性・性能・セキュリティのバランスをとる。
+AWSのサーバーレス構成＆マネージドサービスで、NoOpsでコスト・可用性・性能・セキュリティのバランスをとる。
 
 - 認証: Cognito
 - CloudFront
@@ -18,7 +18,7 @@ AWSのサーバーレス構成＆マネージドサービスで、NoOpeでコス
 - CI/CD: codecommit --> CodeBuild --> ECR image
   - codepipeline(必要に応じ手動承認) --> CodeDeploy ECS Blue/Green(TestTrafficあり)
 - バイナリデータはS3 pre-signed URLを利用して、クライアントから直接読み書きすることで、通信・処理負荷をオフロード
-- Fargete Imageは、golang予定
+- Fargate Imageは、golang予定
   - 単一バイナリでImageSize最小
   - Multi-Stage build+distrolessなど軽量OSベースで、ImageSize最小化。不要なpackage無しによるCVE検知の減少
   - rootFileSystem readonlyによりセキュア化
