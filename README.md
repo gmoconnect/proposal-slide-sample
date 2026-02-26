@@ -81,3 +81,31 @@
   - design/slidev/slides.md
 - 何度か新しいChat Sesionでレビューを繰り返すこと
 - 人手でもレビューし、Claudeに修正依頼することが望ましい
+
+## 4. 挿絵の作成依頼
+
+### NanoBananaProのAPIキーの取得
+
+- 参考: https://note.com/naoki_35/n/nfd7fea56b151
+
+### Nanobanana呼び出しAgent Skillの作成
+
+- 新しいChat Sesionで開始。`Plan mode`で方針を確認した後、作成してもらうこと
+- prompt例:
+  - prompts/4_illustrations/prompt-create-nanobanana-skill.md
+- 作成例:
+  - .claude/skills/generate-illustration
+
+### デザイナーへの指示内容のピックアップ
+
+- 新しいChat Sesionで開始。`Plan mode`で方針を確認した後、作成してもらうこと
+- prompt例:
+  - prompts/4_illustrations/prompt-pickup-illustrations.md
+- 作成例:
+  - proposal/illustration-request.md
+
+### 挿絵作成とレビュー
+
+- 新しいChat Sesionで開始。`Ask before edits` で開始すること
+- prompt例:
+  - prompts/4_illustrations/

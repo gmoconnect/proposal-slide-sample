@@ -124,27 +124,26 @@ layout: default
 
 ## 現行オンプレミスシステムはハードウェア保守期限を迎え、抜本的な基盤刷新が必要である
 
-<CardGroup :cols="3">
-  <Card title="Web層" icon="1">Webサーバー（オンプレミス）</Card>
-  <Card title="AP層" icon="2">アプリケーションサーバー（モノリシック構成）</Card>
-  <Card title="DB層" icon="3">RDBMS（構造化データ＋バイナリデータを格納）</Card>
-</CardGroup>
-
-<div class="mt-[16px]">
+<div class="flex gap-[16px]">
+  <div class="w-[55%] flex justify-center">
+    <img src="/illustrations/ill-09-onprem-3tier.png" class="h-[340px]" alt="現行3層アーキテクチャ" />
+  </div>
+  <div class="w-[45%] text-[13px]">
 
 **現行の課題:**
 
-- すべてのコンポーネントが単一データセンター内に配置 → **DC障害時にサービス全体が停止**
-- バイナリデータ（画像・PDF等）もRDBMSに格納 → Web→AP→DBの全層を経由 → **レスポンス遅延**
-- ハードウェア保守期限が到来 → 「同等HW更新」か「クラウド移行」かの判断が必要
-
-</div>
+- 単一データセンター内に配置 → **DC障害時にサービス全体が停止**
+- バイナリデータもRDBMSに格納 → 全層を経由 → **レスポンス遅延**
+- ハードウェア保守期限が到来
 
 <Callout type="warning">
 
-ハードウェアを新調しても同じアーキテクチャ上の問題は解決しない。抜本的な基盤刷新が必要。
+HWを新調しても同じアーキテクチャ上の問題は解決しない。抜本的な基盤刷新が必要。
 
 </Callout>
+
+  </div>
+</div>
 
 ---
 layout: default
@@ -310,22 +309,9 @@ layout: default
 
 ## AWSサーバーレス・マネージドサービスを中心としたクラウドネイティブアーキテクチャで全課題を解決する
 
-<Callout type="info">
-
-**[ ここにアーキテクチャ全体図を挿入 ]**
-
-</Callout>
-
-**図に含めるべき要素:**
-
-- **メインフロー**: ユーザー → CloudFront（CDN + WAF） → ALB（JWT検証） → ECS on Fargate → Aurora Serverless v2
-- **認証フロー**: ユーザー ↔ Amazon Cognito（MFA対応）
-- **バイナリデータフロー**: ユーザー ↔ S3（Pre-signed URL、アプリ層をバイパス）
-- **ダッシュボードフロー**: S3ログ → Athena → QuickSight
-- **CI/CDフロー**: CodeCommit → CodeBuild → ECR → CodePipeline → CodeDeploy（Blue/Green）
-- **セキュリティ層**: WAF（エッジ）、GuardDuty、CloudTrail
-- **可用性**: 全コンポーネントMulti-AZ配置（2〜3 AZ）
-- **カラーコード**: コンピュート（青）、ストレージ（緑）、セキュリティ（オレンジ）、監視（紫）
+<div class="flex justify-center">
+  <img src="/illustrations/ill-01-architecture-overview.png" class="h-[320px]" alt="アーキテクチャ全体図" />
+</div>
 
 ---
 layout: default
@@ -400,28 +386,9 @@ layout: default
 
 ## S3 Pre-signed URLによりバイナリデータをオフロードし、アプリケーション負荷とDBボトルネックを同時に解消する
 
-<BeforeAfter improvement="転送量90%削減" beforeLabel="現行フロー" afterLabel="提案フロー">
-  <template #before>
-    <ul>
-      <li>Client → Web → AP → <strong>DB（バイナリ格納）</strong></li>
-      <li>全データがアプリケーション層を経由</li>
-      <li>DBサイズ肥大化（100GB、うち90GBがバイナリ）</li>
-    </ul>
-  </template>
-  <template #after>
-    <ul>
-      <li>メタデータ: Client → AP → Aurora（<strong>10%</strong>）</li>
-      <li>バイナリ: Client ↔ <strong>S3直接</strong>（<strong>90%</strong>）</li>
-      <li>DBサイズ: 約100GB（メタデータのみ）に抑制</li>
-    </ul>
-  </template>
-</BeforeAfter>
-
-<Callout type="success">
-
-AP・DBをバイナリ転送から完全解放。S3は容量無制限のため将来のデータ増にも対応可能。
-
-</Callout>
+<div class="flex justify-center">
+  <img src="/illustrations/ill-02-s3-presigned-dataflow.png" class="h-[320px]" alt="S3 Pre-signed URL データフロー" />
+</div>
 
 ---
 layout: process
@@ -443,16 +410,8 @@ layout: process
   { label: '5年保管', description: '法定期限まで' },
 ]" />
 
-<div class="mt-[12px]">
-
-<div class="text-[11px] text-gray-500 mb-[4px]">表5-3 S3ストレージクラス別コスト比較</div>
-
-| ストレージクラス | コスト（GB/月） | 取得時間 |
-|---|---|---|
-| S3 Standard | $0.025 | ミリ秒 |
-| S3 Glacier Instant Retrieval | $0.005 | ミリ秒 |
-| S3 Glacier Deep Archive | $0.002 | 12時間以内 |
-
+<div class="flex justify-center mt-[8px]">
+  <img src="/illustrations/ill-10-s3-cost-comparison.png" class="h-[200px]" alt="S3コスト比較" />
 </div>
 
 <Callout type="success">
@@ -501,25 +460,9 @@ layout: comparison-table
 
 ## Go言語 + Distrolessイメージにより、コンテナの攻撃面を極小化する
 
-<div class="text-[11px] text-gray-500 mb-[4px]">表5-4 コンテナイメージ比較（一般的なイメージ vs Go + Distroless）</div>
-
-<ComparisonTable
-  :headers="['項目', '一般的なイメージ（Ubuntu+ランタイム）', 'Go + Distroless']"
-  :rows="[
-    ['イメージサイズ', '約500MB', '約10〜20MB'],
-    ['CVE対象パッケージ数', '100以上（OS, ライブラリ, ツール）', '大幅削減（Go標準ライブラリのみ）'],
-    ['シェルアクセス', 'あり（攻撃者に利用されるリスク）', 'なし（シェル非搭載）'],
-    ['パッケージマネージャー', 'あり', 'なし'],
-    ['rootファイルシステム', '読み書き可能', 'read-only設定'],
-  ]"
-  :highlightCol="2"
-/>
-
-<Callout type="info">
-
-OS層やミドルウェアがほぼ存在しないため、CVEの検知対象が大幅に減少し攻撃面を極小化する。
-
-</Callout>
+<div class="flex justify-center">
+  <img src="/illustrations/ill-08-container-comparison.png" class="h-[320px]" alt="コンテナイメージ比較" />
+</div>
 
 ---
 layout: default
@@ -552,25 +495,9 @@ layout: comparison-table
 
 ## WAF・GuardDuty・CloudTrailの多層防御により、エッジからデータ層まで自動的に保護する
 
-<div class="text-[11px] text-gray-500 mb-[4px]">表5-5 多層防御サービス一覧（防御層・役割）</div>
-
-<ComparisonTable
-  :headers="['防御層', 'サービス', '役割']"
-  :rows="[
-    ['エッジ層', 'CloudFront + AWS WAF（Managed Rules）', 'DDoS防御、OWASP Top 10対策、不正リクエスト遮断'],
-    ['認証層', 'ALB + Cognito JWT検証', '未認証リクエストをアプリケーション到達前に遮断'],
-    ['コンピュート層', 'ECS on Fargate（read-only FS、SSHなし）', 'コンテナ内部への侵入・改ざんを防止'],
-    ['監視層', 'GuardDuty', '機械学習ベースの脅威検出（不正アクセス、マルウェア通信等）'],
-    ['監査層', 'CloudTrail', '全APIコールの記録・監査証跡の保全'],
-  ]"
-  :highlightCol="1"
-/>
-
-<Callout type="info">
-
-すべてマネージドサービスのため、セキュリティ監視の自動化が実現する。外側から内側に向かう多層防御（オニオンモデル）を構成。
-
-</Callout>
+<div class="flex justify-center">
+  <img src="/illustrations/ill-03-onion-defense.png" class="h-[320px]" alt="多層防御オニオンモデル" />
+</div>
 
 ---
 layout: comparison-table
@@ -610,29 +537,9 @@ layout: comparison-table
 
 ## Multi-AZ構成と自動フェイルオーバーにより、99.95%以上の可用性を確保する
 
-<div class="text-[11px] text-gray-500 mb-[4px]">表5-7 コンポーネント別 可用性設計とSLA</div>
-
-<ComparisonTable
-  :headers="['コンポーネント', '可用性設計', 'SLA']"
-  :rows="[
-    ['CloudFront', 'グローバルエッジ、本質的に高可用', '99.9%'],
-    ['ALB', 'Multi-AZ自動分散', '99.99%'],
-    ['ECS on Fargate', 'タスクをAZ間に分散配置、異常タスク自動置換', '99.99%'],
-    ['Aurora Serverless v2', 'Multi-AZフェイルオーバー（通常30秒以内）', '99.99%'],
-    ['S3', '99.999999999%の耐久性', '99.99%'],
-  ]"
-  :highlightCol="2"
-/>
-
-**遠隔地バックアップ:**
-- **Aurora**: AWS Backupによるクロスリージョンバックアップ
-- **S3**: クロスリージョンレプリケーションで別リージョンに自動複製
-
-<Callout type="info">
-
-すべてのコンポーネントをMulti-AZに配置し、単一障害点を完全に排除。遠隔地バックアップでBCP対応も実現。
-
-</Callout>
+<div class="flex justify-center">
+  <img src="/illustrations/ill-04-multi-az.png" class="h-[320px]" alt="Multi-AZ 可用性構成" />
+</div>
 
 ---
 layout: process
@@ -645,26 +552,9 @@ layout: process
 
 ## Cognito + ALBのJWT検証により、不正リクエストをアプリケーション到達前に遮断する
 
-<ProcessFlow :steps="[
-  { label: '1. 認証要求', description: 'ID/PW + MFA' },
-  { label: '2. JWT発行', description: 'Cognito検証' },
-  { label: '3. リクエスト', description: 'JWT付き送信' },
-  { label: '4. JWT検証', description: 'ALBで判定' },
-  { label: '5. 転送/遮断', description: '有効→Fargate' },
-]" />
-
-<div class="mt-[24px]">
-
-- **有効な場合**: ALBがリクエストをFargateに転送 → 正常処理
-- **無効な場合**: ALBが403 Forbiddenを返却 → **アプリケーションに到達しない**
-
+<div class="flex justify-center">
+  <img src="/illustrations/ill-05-cognito-auth-sequence.png" class="h-[320px]" alt="Cognito + ALB 認証シーケンス" />
 </div>
-
-<Callout type="success">
-
-認証されていないリクエストはアプリケーション到達前に遮断される。アプリケーション層の負荷軽減とセキュリティ強化を同時に実現。
-
-</Callout>
 
 </div>
 
@@ -720,16 +610,8 @@ layout: default
   { label: 'QuickSight', description: 'BIダッシュボード' },
 ]" />
 
-<div class="mt-[12px]">
-
-**可視化KPI例:**
-
-- アクセス数の推移（日次・時間帯別・月末ピーク分析）
-- レスポンスタイムの推移
-- エラー率の推移
-- リソース使用率（Fargate CPU/メモリ、Aurora ACU）
-- ストレージ使用量の推移
-
+<div class="flex justify-center mt-[8px]">
+  <img src="/illustrations/ill-06-quicksight-dashboard.png" class="h-[230px]" alt="QuickSight ダッシュボードモックアップ" />
 </div>
 
 ---
@@ -836,30 +718,9 @@ layout: process
 
 ## CI/CDパイプラインとBlue/Greenデプロイにより、ゼロダウンタイムで安全なリリースを実現する
 
-<div class="text-[11px] text-gray-500 mb-[4px]">図5-2 CI/CDパイプライン全体フロー</div>
-
-<ProcessFlow :steps="[
-  { label: 'CodeCommit', description: 'ソース管理' },
-  { label: 'CodeBuild', description: 'ビルド・テスト' },
-  { label: 'ECR', description: 'イメージ保管' },
-  { label: 'CodePipeline', description: '手動承認' },
-  { label: 'CodeDeploy', description: 'Blue/Green' },
-]" />
-
-<div class="mt-[24px]">
-
-**Blue/Greenデプロイ:**
-- 新バージョンをGreen環境にデプロイ → TestTrafficで検証 → 本番トラフィックをGreenに切替
-- 問題発生 → Blue環境に即時ロールバック（**ダウンタイムゼロ**）
-- 手動承認ステップにより本番リリースの統制を維持
-
+<div class="flex justify-center">
+  <img src="/illustrations/ill-07-cicd-bluegreen.png" class="h-[320px]" alt="CI/CD + Blue/Green デプロイ" />
 </div>
-
-<Callout type="info">
-
-完全自動化されたCI/CDパイプラインで、品質を確保しつつ迅速なリリースサイクルを実現。ロールバックは自動で数分以内に完了。
-
-</Callout>
 
 </div>
 
